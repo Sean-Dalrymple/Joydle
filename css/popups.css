@@ -1,0 +1,27 @@
+.popup-window {
+    z-index: 2;
+    width: 20rem;
+    height: auto;
+    padding: 0.75rem; 
+    background-color: purple;
+    border-radius: 15px;
+    margin: 0 auto;
+    display:grid;
+    grid-template-rows: 1fr auto;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translate(-50% , -150%);
+    transition: transform ease-in-out 1s;
+}
+
+.info-grid {
+    background-color: azure;
+    margin-bottom: 0.5rem;
+    color: black;
+    padding: 5px 5px 5px 0px;
+    display: grid; 
+    grid-template-columns: 2em 1fr; 
+    grid-template-rows: repeat(auto-fill, 1.5em);
+    row-gap: 3px;
+}
