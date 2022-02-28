@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Sarah's word game</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="A word game for Sarah on Valentine's Day. Match the letters and guess the words.">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="theme-color" content="#000000"/>
+        <link rel="stylesheet" href="css/guesses.css" >
+        <link rel="stylesheet" href="css/keyboard.css" >
+        <script type="text/javascript" src="js/split_length.js"></script>
+        <script type="text/javascript" src="js/scripts.js" defer></script>
+        <link rel="apple-touch-icon" sizes="72x72" href="images/icons/icon-72x72.png" >
+        <link rel="apple-touch-icon" sizes="114x114" href="images/icons/icon-114x114.png" >
+        <link rel="apple-touch-icon" sizes="152x152" href="images/icons/icon-512x512.png" >
+        <link rel="manifest" href="/manifest.webmanifest">
+
+        <style>
+            html {
+                font-size: 12pt;
+                background-color: black;
+                color: white;
+                box-sizing: border-box;
+            }
+            *,
+            *:before,
+            *:after {
+                box-sizing: inherit;
+            }
+            a, a:visited {
+              color: black;
+              font-weight: 700;
+              text-decoration: none;
+              padding: 0.4rem 1rem;
+              background-color: lightgray;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <div style="display: grid; grid-template-rows: auto 1fr auto auto; padding: 0; margin: 0; z-index: 0;
+        transition: transform ease-in-out 1s;"
+        id="id_game_grid">
+            <div style="font-size: 1.5rem; margin: 5px auto; width: 100%; grid-row: 1; display:flex">
+                <div style="margin-right: auto;"><button type="button" onclick="displaySettings()" style="padding: 0; font-size: 1.2rem; background-color: transparent; border: none;">⚙️</button></div>
+                <label for="id_word_length">Word length:</label>
+                <select id="id_word_length" onchange="getRandomWord(this.value)" style=" width: 3em; font: inherit;">
+                    <option value="4">4</option>
+                    <option value="5" selected="selected">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                </select>
+                <input type="text" id="id_area" style="display: none;">
+                <div style="margin-left: 5px; margin-right: auto;"><button role="button" onclick="getRandomWord(document.getElementById('id_word_length').value)" style="padding: 0; font-size: 1.2rem; background-color: transparent; border: none;">♻️</button></div>
+            </div>
+            <div style="height: 100%; width:100%; grid-row: 2;">
+                <div class="guess_grid" id="id_guess_grid">
+
+                </div>
+            </div>
+            <div class="keyboard" style="grid-row: 3;" id="id_keyboard">
+
+            </div>
+            <div id="id_definition" style="visibility: hidden; height: 0;"></div>
+            
+        </div>
+        
+        <div id="id_stats" style="z-index: 2; width: 20rem; height: auto; padding: 0.75rem; 
+                background-color: purple; border-radius: 15px; margin: 0 auto;
+                display:grid; grid-template-rows: 1fr auto;
+                position: absolute;
+                top: 10px;
+                left: 50%;
+                transform: translate(-50% , -150%);
+                transition: transform ease-in-out 1s;
+                "
+        >
+          <div style="background-color: azure; margin-bottom: 0.5rem; color: black; padding: 5px 5px 5px 0px;
+              display: grid; 
+              grid-template-columns: 2em 1fr; 
+              grid-template-rows: repeat(auto-fill, 1.5em);
+              row-gap: 3px;"
+              id="id_stats_graph"
+          >
+          </div>
+          <button type="button" style="margin: 0 auto; padding: 0.25rem 1.5rem; border-radius: 10px;" onclick="displayGame()">OK</button>
+        </div>
+        
+        <div id="id_settings" style="z-index: 2; width: 20rem; height: auto; padding: 0.75rem; 
+                background-color: purple; border-radius: 15px; margin: 0 auto;
+                display:grid; grid-template-rows: 1fr auto;
+                position: absolute;
+                top: 10px;
+                left: 50%;
+                transform: translate(-50% , -150%);
+                transition: transform ease-in-out 1s;
+                "
+        >
+          <div style="background-color: azure; margin-bottom: 0.5rem; color: black; padding: 5px 5px 5px 0px;
+              display: grid; 
+              grid-template-columns: 2em 1fr; 
+              grid-template-rows: repeat(auto-fill, 1.5em);
+              row-gap: 3px;"
+              id="id_ettings_grid"
+          >
+            <label style="width: 100%; font-size: 16pt; text-align: center; grid-column: 1 / 3;">Difficulty Options</label>
+            <input id="id_setting_multichar" type="checkbox" onchange="saveSettings()">
+            <label for="id_setting_multichar">Distinguish repeat letters</label>
+            <input id="id_setting_hints" type="checkbox" onchange="saveSettings()">
+            <label for="id_setting_hints">Enable hints (reveal an unknown character, or place an unplaced character)</label>
+          </div>
+          <button type="button" style="margin: 0 auto; padding: 0.25rem 1.5rem; border-radius: 10px;" onclick="displayGame()">OK</button>
+        </div>
+
+    </body>
+</html>

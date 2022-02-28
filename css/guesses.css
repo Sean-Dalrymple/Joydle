@@ -1,0 +1,55 @@
+.guess_grid {
+    font-size: 1.25rem;
+    font-weight: 700;
+    display: grid;
+    gap: 10px;
+    margin: 10px auto;
+    padding: 5px;
+    width: fit-content;
+}
+
+.guess_grid span {
+    margin: auto;
+}
+
+.letter_correct {
+    color: black;
+    background: gold;
+    display: flex;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    transform: rotateY(360deg);
+}
+
+.position_correct {
+    color: black;
+    background: lightgreen;
+    display: flex;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    transform: rotateY(360deg);
+}
+
+.incorrect {
+    color: #444;
+    background: #AAA;
+    display: flex;
+}
+
+.current_row {
+    background: lightgray;
+    color: black;
+    display: flex;
+}
+
+.following_row {
+    background: midnightblue;
+}
+
+.whomp {
+    display: flex;
+    background: red;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    transform: rotateY(360deg);
+}
