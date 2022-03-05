@@ -12,8 +12,9 @@
     font-size: 1rem;
     font-weight: 700;
     margin: 1px 3px;
-    height: 2.2rem;
-    min-width: 1.65rem;
+    height: 2.5rem;
+    padding: 0;
+    width: 1.8rem;
     border-radius: 0;
 }
 
