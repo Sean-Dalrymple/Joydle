@@ -3,8 +3,12 @@ var current_letter = 0;
 var length_number = 4;
 var random_word = "";
 
-function getRandomWord(word_length) {
-    var word_array = getWordList(word_length);
+function getRandomWord(word_length, language="en") {
+    var word_array;
+    if( language == "en")
+        word_array = getWordList(word_length);
+    else
+        word_array = getWordListFr(word_length);
     random_word = word_array[Math.floor(Math.random() * word_array.length)].toUpperCase();
     document.getElementById("id_area").value = random_word;
     document.getElementById("id_guess_grid").className = "guess_grid";
@@ -26,7 +30,10 @@ function getRandomWord(word_length) {
     document.getElementById("id_guess_grid").innerHTML = grid_items;
 
     document.getElementById("id_definition").style = `width: 100%; visibility: collapse;`;
-    document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.dictionary.com/browse/${random_word}" style="margin: 0 auto;">see definition</a>`
+    if( language == "en")
+        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.dictionary.com/browse/${random_word}" style="margin: 0 auto;">see definition</a>`
+    else
+        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.larousse.fr/dictionnaires/francais/${random_word}" style="margin: 0 auto;">see definition</a>`
 
     buildKeyboard();
 
@@ -115,7 +122,13 @@ function submit() {
         for( check_letter = 0; check_letter < length_number; check_letter++ ) {
             fullWord = fullWord + document.getElementById(`id_letter_${current_row}_${check_letter}`).innerText;
         }
-        if( getWordList(length_number).includes(fullWord.toLowerCase())) {
+        var word_array;
+        if( document.querySelector('input[name="word_language"]:checked').value == "en")
+            word_array = getWordList(length_number);
+        else
+            word_array = getWordListFr(length_number);
+
+        if( word_array.includes(fullWord.toLowerCase())) {
             var check_array = random_word.split("");
             var correct_count = 0;
             var letter_correct_count = 0;
@@ -297,6 +310,7 @@ function displaySettings() {
 
 function initializeSettings( ) {
     var settings = {
+        language: "en",
         char_uniqueness: false,
         hints: false
     };
@@ -325,6 +339,7 @@ function saveSettings() {
     var settings = getSettings();
     settings.char_uniqueness = document.getElementById("id_setting_multichar").checked;
     settings.hints = document.getElementById("id_setting_hints").checked;
+    settings.language = document.querySelector('input[name="word_language"]:checked').value;
 
     window.localStorage.setItem( "userprefs" , JSON.stringify(settings) );
 }
@@ -352,5 +367,5 @@ document.addEventListener('keyup', (event) => {
 
 document.addEventListener( 'DOMContentLoaded', (e) => {
     loadSettings();
-    getRandomWord("5");
+    getRandomWord("5", document.querySelector('input[name="word_language"]:checked').value);
 });
