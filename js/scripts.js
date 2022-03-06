@@ -376,6 +376,9 @@ function loadSettings() {
     var settings = getSettings();
     document.getElementById("id_setting_multichar").checked = settings.char_uniqueness;
     document.getElementById("id_setting_hints").checked = settings.hints;
+    if( settings.language ) {
+        document.querySelector(`input[name="word_language"][value="${settings.language}"]`).checked = true;
+    }
 }
 
 function saveSettings() {
