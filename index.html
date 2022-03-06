@@ -84,10 +84,10 @@
               id="id_settings_grid"
           >
             <label style="width: 100%; font-size: 16pt; text-align: center; grid-column: 1 / 3;">Language</label>
-            <input id="id_english" type="radio" name="word_language" value="en" checked>
+            <input id="id_english" type="radio" name="word_language" value="en" checked onchange="saveSettings()">
             <label for="id_english">English</label>
-            <input id="id_french" type="radio" name="word_language" value="fr">
-            <label for="id_french">Française</label>
+            <input id="id_french" type="radio" name="word_language" value="fr" onchange="saveSettings()">
+            <label for="id_french">Français</label>
             <label style="width: 100%; font-size: 16pt; text-align: center; grid-column: 1 / 3;">Difficulty Options</label>
             <input id="id_setting_multichar" type="checkbox" onchange="saveSettings()">
             <label for="id_setting_multichar">Distinguish repeat letters</label>

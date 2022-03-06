@@ -31,9 +31,9 @@ function getRandomWord(word_length, language="en") {
 
     document.getElementById("id_definition").style = `width: 100%; visibility: collapse;`;
     if( language == "en")
-        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.dictionary.com/browse/${random_word}" style="margin: 0 auto;">see definition</a>`
+        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.dictionary.com/browse/${random_word.toLowerCase()}" style="margin: 0 auto;">see definition</a>`
     else
-        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.larousse.fr/dictionnaires/francais/${random_word}" style="margin: 0 auto;">see definition</a>`
+        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.larousse.fr/dictionnaires/francais/${random_word.toLowerCase()}" style="margin: 0 auto;">see definition</a>`
 
     buildKeyboard();
 
@@ -116,6 +116,44 @@ function hint() {
     }
 }
 
+function binaryFindFr(arr, searchValue, start, end) {
+    if (start > end)
+        return false;
+  
+    let mid=Math.floor((start + end)/2);
+    let compareValue = arr[mid].normalize('NFD').replace(/[\u0300-\u036f]/g, "").localeCompare(searchValue);
+  
+    if (compareValue == 0)
+        return true;
+
+    if( compareValue > 0)
+        return binaryFindFr(arr, searchValue, start, mid-1);
+    else
+        return binaryFindFr(arr, searchValue, mid+1, end);
+}
+
+function binaryFindEn(arr, searchValue, start, end) {
+    if (start > end)
+        return false;
+  
+    let mid=Math.floor((start + end)/2);
+  
+    if (arr[mid]===searchValue)
+        return true;
+         
+    if(arr[mid] > searchValue)
+        return binaryFindEn(arr, searchValue, start, mid-1);
+    else
+        return binaryFindEn(arr, searchValue, mid+1, end);
+}
+
+function binaryFind(arr, searchValue) {
+    if( document.querySelector('input[name="word_language"]:checked').value == "en")
+        return binaryFindEn(arr, searchValue, 0, arr.length - 1);
+    else
+        return binaryFindFr(arr, searchValue, 0, arr.length - 1);
+}
+
 function submit() {
     if( current_letter == length_number && current_row < length_number + 1 ) {
         var fullWord = "";
@@ -128,8 +166,8 @@ function submit() {
         else
             word_array = getWordListFr(length_number);
 
-        if( word_array.includes(fullWord.toLowerCase())) {
-            var check_array = random_word.split("");
+        if( binaryFind(word_array, fullWord.toLowerCase())) {
+            var check_array = random_word.normalize('NFD').replace(/[\u0300-\u036f]/g, "").split("");
             var correct_count = 0;
             var letter_correct_count = 0;
 
@@ -193,6 +231,11 @@ function submit() {
             }
 
             if( correct_count == length_number ) {
+                check_array = random_word.split("");
+                for( change_class = 0; change_class < length_number; change_class++) {
+                    document.getElementById(`id_letter_${current_row}_${change_class}`).innerText = check_array[change_class];
+                }
+
                 setTimeout( function(length_number, current_row) {
                     displayStats( 
                         incrementStat(length_number, 'success', current_row )
