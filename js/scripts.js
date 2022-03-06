@@ -33,15 +33,15 @@ function getRandomWord(word_length, language="en") {
     if( language == "en")
         document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.dictionary.com/browse/${random_word.toLowerCase()}" style="margin: 0 auto;">see definition</a>`
     else
-        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.larousse.fr/dictionnaires/francais/${random_word.toLowerCase()}" style="margin: 0 auto;">see definition</a>`
+        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.larousse.fr/dictionnaires/francais/${random_word.toLowerCase()}" style="margin: 0 auto;">voir la définition</a>`
 
-    buildKeyboard();
+    buildKeyboard(language);
 
     current_row = 0;
     current_letter = 0;
 }
 
-function buildKeyboard() {
+function buildKeyboard(language) {
     var topRow = "qwertyuiop".toUpperCase();
     var midRow = "asdfghjkl".toUpperCase();
     var lastRow = "zxcvbnm".toUpperCase();
@@ -66,8 +66,13 @@ function buildKeyboard() {
     if(document.getElementById("id_setting_hints").checked) {
         rowHTML = rowHTML + '<button type="button" id="id_button_hint" onclick="hint()" style="width: 6rem; height: 2rem;">Hint</button>';
     }
-    rowHTML = rowHTML + `<button type="button" onclick="submit()" style="width: 6rem; height: 2rem;">Check</button>`
-    rowHTML = rowHTML + `<button type="button" onclick="backLetter()" style="width: 6rem; height: 2rem;">Delete</button>`
+    if( language == "en" ) {
+        rowHTML = rowHTML + `<button type="button" onclick="submit()" style="width: 6rem; height: 2rem;">Check</button>`
+        rowHTML = rowHTML + `<button type="button" onclick="backLetter()" style="width: 6rem; height: 2rem;">Delete</button>`
+    } else {
+        rowHTML = rowHTML + `<button type="button" onclick="submit()" style="width: 6rem; height: 2rem;">Vérifiez</button>`
+        rowHTML = rowHTML + `<button type="button" onclick="backLetter()" style="width: 6rem; height: 2rem;">Effacer</button>`
+    }
     rowHTML = rowHTML + `</div>`;
 
     document.getElementById("id_keyboard").innerHTML = rowHTML;
@@ -388,6 +393,11 @@ function saveSettings() {
     settings.language = document.querySelector('input[name="word_language"]:checked').value;
 
     window.localStorage.setItem( "userprefs" , JSON.stringify(settings) );
+}
+
+function changeLanguage() {
+    saveSettings();
+    getRandomWord( document.getElementById('id_word_length').value, document.querySelector('input[name=\'word_language\']:checked').value);
 }
 
 function backLetter() {
