@@ -3,8 +3,12 @@ var current_letter = 0;
 var length_number = 4;
 var random_word = "";
 
-function getRandomWord(word_length) {
-    var word_array = getWordList(word_length);
+function getRandomWord(word_length, language="en") {
+    var word_array;
+    if( language == "en")
+        word_array = getWordList(word_length);
+    else
+        word_array = getWordListFr(word_length);
     random_word = word_array[Math.floor(Math.random() * word_array.length)].toUpperCase();
     document.getElementById("id_area").value = random_word;
     document.getElementById("id_guess_grid").className = "guess_grid";
@@ -26,15 +30,18 @@ function getRandomWord(word_length) {
     document.getElementById("id_guess_grid").innerHTML = grid_items;
 
     document.getElementById("id_definition").style = `width: 100%; visibility: collapse;`;
-    document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.dictionary.com/browse/${random_word}" style="margin: 0 auto;">see definition</a>`
+    if( language == "en")
+        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.dictionary.com/browse/${random_word.toLowerCase()}" style="margin: 0 auto;">see definition</a>`
+    else
+        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.larousse.fr/dictionnaires/francais/${random_word.toLowerCase()}" style="margin: 0 auto;">voir la définition</a>`
 
-    buildKeyboard();
+    buildKeyboard(language);
 
     current_row = 0;
     current_letter = 0;
 }
 
-function buildKeyboard() {
+function buildKeyboard(language) {
     var topRow = "qwertyuiop".toUpperCase();
     var midRow = "asdfghjkl".toUpperCase();
     var lastRow = "zxcvbnm".toUpperCase();
@@ -57,10 +64,15 @@ function buildKeyboard() {
     });
     rowHTML = rowHTML + `</div><div class="button_row">`;
     if(document.getElementById("id_setting_hints").checked) {
-        rowHTML = rowHTML + '<button type="button" id="id_button_hint" onclick="hint()" style="width: 6rem; height: 2rem;">Hint</button>';
+        rowHTML = rowHTML + '<button type="button" id="id_button_hint" onclick="hint()" style="width: 6rem; min-width: 6rem; height: 2rem;">Hint</button>';
     }
-    rowHTML = rowHTML + `<button type="button" onclick="submit()" style="width: 6rem; height: 2rem;">Check</button>`
-    rowHTML = rowHTML + `<button type="button" onclick="backLetter()" style="width: 6rem; height: 2rem;">Delete</button>`
+    if( language == "en" ) {
+        rowHTML = rowHTML + `<button type="button" onclick="submit()" style="width: 6rem; min-width: 6rem; height: 2rem;">Check</button>`
+        rowHTML = rowHTML + `<button type="button" onclick="backLetter()" style="width: 6rem; min-width: 6rem; height: 2rem;">Delete</button>`
+    } else {
+        rowHTML = rowHTML + `<button type="button" onclick="submit()" style="width: 6rem; min-width: 6rem; height: 2rem;">Vérifiez</button>`
+        rowHTML = rowHTML + `<button type="button" onclick="backLetter()" style="width: 6rem; min-width: 6rem; height: 2rem;">Effacer</button>`
+    }
     rowHTML = rowHTML + `</div>`;
 
     document.getElementById("id_keyboard").innerHTML = rowHTML;
@@ -76,14 +88,12 @@ function enterLetter(letter) {
 function hint() {
     document.getElementById("id_button_hint").disabled = true;
 
-    var check_array = random_word.split("");
+    var check_array = random_word.normalize('NFD').replace(/[\u0300-\u036f]/g, "").split("");//random_word.split("");
     var unknown_chars = new Set();
     var unplaced_chars = new Set();
 
     check_array.forEach( (letter, index) => {
-        console.log("class name = '" + document.getElementById(`id_key_${letter}`).className + "' for letter " + letter);
         if( document.getElementById(`id_key_${letter}`).className == "" ) {
-            console.log("here");
             unknown_chars.add(letter);
         } else if( document.getElementById(`id_key_${letter}`).className == "key_letter_correct" ) {
             unplaced_chars.add(index);
@@ -103,10 +113,47 @@ function hint() {
         var hint_char = Array.from(unknown_chars)[Math.floor(Math.random() * unknown_chars.size) ];
         document.getElementById(`id_key_${hint_char}`).className = "key_letter_correct";
     } else {
-        console.log(`hint index = ${hint_index}`);
         var hint_index = Array.from(unplaced_chars)[Math.floor(Math.random() * unplaced_chars.size) ];
         document.getElementById(`id_letter_${current_row}_${hint_index}`).innerText = check_array[hint_index];
     }
+}
+
+function binaryFindFr(arr, searchValue, start, end) {
+    if (start > end)
+        return false;
+  
+    let mid=Math.floor((start + end)/2);
+    let compareValue = arr[mid].normalize('NFD').replace(/[\u0300-\u036f]/g, "").localeCompare(searchValue);
+  
+    if (compareValue == 0)
+        return true;
+
+    if( compareValue > 0)
+        return binaryFindFr(arr, searchValue, start, mid-1);
+    else
+        return binaryFindFr(arr, searchValue, mid+1, end);
+}
+
+function binaryFindEn(arr, searchValue, start, end) {
+    if (start > end)
+        return false;
+  
+    let mid=Math.floor((start + end)/2);
+  
+    if (arr[mid]===searchValue)
+        return true;
+         
+    if(arr[mid] > searchValue)
+        return binaryFindEn(arr, searchValue, start, mid-1);
+    else
+        return binaryFindEn(arr, searchValue, mid+1, end);
+}
+
+function binaryFind(arr, searchValue) {
+    if( document.querySelector('input[name="word_language"]:checked').value == "en")
+        return binaryFindEn(arr, searchValue, 0, arr.length - 1);
+    else
+        return binaryFindFr(arr, searchValue, 0, arr.length - 1);
 }
 
 function submit() {
@@ -115,8 +162,14 @@ function submit() {
         for( check_letter = 0; check_letter < length_number; check_letter++ ) {
             fullWord = fullWord + document.getElementById(`id_letter_${current_row}_${check_letter}`).innerText;
         }
-        if( getWordList(length_number).includes(fullWord.toLowerCase())) {
-            var check_array = random_word.split("");
+        var word_array;
+        if( document.querySelector('input[name="word_language"]:checked').value == "en")
+            word_array = getWordList(length_number);
+        else
+            word_array = getWordListFr(length_number);
+
+        if( binaryFind(word_array, fullWord.toLowerCase())) {
+            var check_array = random_word.normalize('NFD').replace(/[\u0300-\u036f]/g, "").split("");
             var correct_count = 0;
             var letter_correct_count = 0;
 
@@ -160,7 +213,6 @@ function submit() {
                 for( check_letter = 0; check_letter < length_number; check_letter++ ) {
                     if( document.getElementById(`id_letter_${current_row}_${check_letter}`).innerText == check_array[check_letter] ) {
                         setTimeout( function(current_row, check_letter) {
-                            console.log(`id_row_${current_row}_${check_letter} position_correct`)
                             document.getElementById(`id_row_${current_row}_${check_letter}`).className = "position_correct";
                         }, 200 * (letter_correct_count + correct_count), current_row, check_letter );
                         correct_count++;
@@ -180,6 +232,11 @@ function submit() {
             }
 
             if( correct_count == length_number ) {
+                check_array = random_word.split("");
+                for( change_class = 0; change_class < length_number; change_class++) {
+                    document.getElementById(`id_letter_${current_row}_${change_class}`).innerText = check_array[change_class];
+                }
+
                 setTimeout( function(length_number, current_row) {
                     displayStats( 
                         incrementStat(length_number, 'success', current_row )
@@ -297,6 +354,7 @@ function displaySettings() {
 
 function initializeSettings( ) {
     var settings = {
+        language: "en",
         char_uniqueness: false,
         hints: false
     };
@@ -319,14 +377,23 @@ function loadSettings() {
     var settings = getSettings();
     document.getElementById("id_setting_multichar").checked = settings.char_uniqueness;
     document.getElementById("id_setting_hints").checked = settings.hints;
+    if( settings.language ) {
+        document.querySelector(`input[name="word_language"][value="${settings.language}"]`).checked = true;
+    }
 }
 
 function saveSettings() {
     var settings = getSettings();
     settings.char_uniqueness = document.getElementById("id_setting_multichar").checked;
     settings.hints = document.getElementById("id_setting_hints").checked;
+    settings.language = document.querySelector('input[name="word_language"]:checked').value;
 
     window.localStorage.setItem( "userprefs" , JSON.stringify(settings) );
+}
+
+function changeLanguage() {
+    saveSettings();
+    getRandomWord( document.getElementById('id_word_length').value, document.querySelector('input[name=\'word_language\']:checked').value);
 }
 
 function backLetter() {
@@ -352,5 +419,5 @@ document.addEventListener('keyup', (event) => {
 
 document.addEventListener( 'DOMContentLoaded', (e) => {
     loadSettings();
-    getRandomWord("5");
+    getRandomWord("5", document.querySelector('input[name="word_language"]:checked').value);
 });
