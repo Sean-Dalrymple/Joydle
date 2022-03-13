@@ -47,7 +47,7 @@
             <div style="font-size: 1.5rem; margin: 5px auto; width: 100%; grid-row: 1; display:flex">
                 <div style="margin-right: auto;"><button type="button" onclick="displaySettings()" style="padding: 0; font-size: 1.2rem; background-color: transparent; border: none;">⚙️</button></div>
                 <label for="id_word_length">Word length:</label>
-                <select id="id_word_length" onchange="getRandomWord(this.value, document.querySelector('input[name=\'word_language\']:checked').value)" style=" width: 3em; font: inherit;">
+                <select id="id_word_length" onchange="getRandomWord(this.value, document.querySelector('input[name=\'word_language\']:checked').value)" style="margin-left: 5px; width: 2em; font: inherit; text-align: center;">
                     <option value="4">4</option>
                     <option value="5" selected="selected">5</option>
                     <option value="6">6</option>
@@ -56,7 +56,7 @@
                     <option value="9">9</option>
                 </select>
                 <input type="text" id="id_area" style="display: none;">
-                <div style="margin-left: 5px; margin-right: auto;"><button role="button" onclick="getRandomWord(document.getElementById('id_word_length').value, document.querySelector('input[name=\'word_language\']:checked').value)" style="padding: 0; font-size: 1.2rem; background-color: transparent; border: none;">♻️</button></div>
+                <div style="margin-left: 10px; margin-right: auto;"><button role="button" onclick="getRandomWord(document.getElementById('id_word_length').value, document.querySelector('input[name=\'word_language\']:checked').value)" style="padding: 0; font-size: 1.2rem; background-color: transparent; border: none;">♻️</button></div>
             </div>
             <div style="height: 100%; width:100%; grid-row: 2;">
                 <div class="guess_grid" id="id_guess_grid">
