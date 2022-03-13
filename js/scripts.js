@@ -88,7 +88,7 @@ function enterLetter(letter) {
 function hint() {
     document.getElementById("id_button_hint").disabled = true;
 
-    var check_array = random_word.split("");
+    var check_array = random_word.normalize('NFD').replace(/[\u0300-\u036f]/g, "").split("");//random_word.split("");
     var unknown_chars = new Set();
     var unplaced_chars = new Set();
 
