@@ -64,14 +64,14 @@ function buildKeyboard(language) {
     });
     rowHTML = rowHTML + `</div><div class="button_row">`;
     if(document.getElementById("id_setting_hints").checked) {
-        rowHTML = rowHTML + '<button type="button" id="id_button_hint" onclick="hint()" style="width: 6rem; height: 2rem;">Hint</button>';
+        rowHTML = rowHTML + '<button type="button" id="id_button_hint" onclick="hint()" style="width: 6rem; min-width: 6rem; height: 2rem;">Hint</button>';
     }
     if( language == "en" ) {
-        rowHTML = rowHTML + `<button type="button" onclick="submit()" style="width: 6rem; height: 2rem;">Check</button>`
-        rowHTML = rowHTML + `<button type="button" onclick="backLetter()" style="width: 6rem; height: 2rem;">Delete</button>`
+        rowHTML = rowHTML + `<button type="button" onclick="submit()" style="width: 6rem; min-width: 6rem; height: 2rem;">Check</button>`
+        rowHTML = rowHTML + `<button type="button" onclick="backLetter()" style="width: 6rem; min-width: 6rem; height: 2rem;">Delete</button>`
     } else {
-        rowHTML = rowHTML + `<button type="button" onclick="submit()" style="width: 6rem; height: 2rem;">Vérifiez</button>`
-        rowHTML = rowHTML + `<button type="button" onclick="backLetter()" style="width: 6rem; height: 2rem;">Effacer</button>`
+        rowHTML = rowHTML + `<button type="button" onclick="submit()" style="width: 6rem; min-width: 6rem; height: 2rem;">Vérifiez</button>`
+        rowHTML = rowHTML + `<button type="button" onclick="backLetter()" style="width: 6rem; min-width: 6rem; height: 2rem;">Effacer</button>`
     }
     rowHTML = rowHTML + `</div>`;
 
