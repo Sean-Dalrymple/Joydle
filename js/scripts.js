@@ -31,9 +31,9 @@ function getRandomWord(word_length, language="en") {
 
     document.getElementById("id_definition").style = `width: 100%; visibility: collapse;`;
     if( language == "en")
-        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.dictionary.com/browse/${random_word.toLowerCase()}" style="margin: 0 auto;">see definition</a>`
+        document.getElementById("id_definition").innerHTML = `<a target="_blank" class="definition" href="https://www.dictionary.com/browse/${random_word.toLowerCase()}" style="margin: 0 auto;">see definition</a>`
     else
-        document.getElementById("id_definition").innerHTML = `<a target="_blank" href="https://www.larousse.fr/dictionnaires/francais/${random_word.toLowerCase()}" style="margin: 0 auto;">voir la définition</a>`
+        document.getElementById("id_definition").innerHTML = `<a target="_blank" class="definition" href="https://www.larousse.fr/dictionnaires/francais/${random_word.toLowerCase()}" style="margin: 0 auto;">voir la définition</a>`
 
     buildKeyboard(language);
 
