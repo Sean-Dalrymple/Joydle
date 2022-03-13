@@ -93,9 +93,7 @@ function hint() {
     var unplaced_chars = new Set();
 
     check_array.forEach( (letter, index) => {
-        console.log("class name = '" + document.getElementById(`id_key_${letter}`).className + "' for letter " + letter);
         if( document.getElementById(`id_key_${letter}`).className == "" ) {
-            console.log("here");
             unknown_chars.add(letter);
         } else if( document.getElementById(`id_key_${letter}`).className == "key_letter_correct" ) {
             unplaced_chars.add(index);
@@ -115,7 +113,6 @@ function hint() {
         var hint_char = Array.from(unknown_chars)[Math.floor(Math.random() * unknown_chars.size) ];
         document.getElementById(`id_key_${hint_char}`).className = "key_letter_correct";
     } else {
-        console.log(`hint index = ${hint_index}`);
         var hint_index = Array.from(unplaced_chars)[Math.floor(Math.random() * unplaced_chars.size) ];
         document.getElementById(`id_letter_${current_row}_${hint_index}`).innerText = check_array[hint_index];
     }
@@ -216,7 +213,6 @@ function submit() {
                 for( check_letter = 0; check_letter < length_number; check_letter++ ) {
                     if( document.getElementById(`id_letter_${current_row}_${check_letter}`).innerText == check_array[check_letter] ) {
                         setTimeout( function(current_row, check_letter) {
-                            console.log(`id_row_${current_row}_${check_letter} position_correct`)
                             document.getElementById(`id_row_${current_row}_${check_letter}`).className = "position_correct";
                         }, 200 * (letter_correct_count + correct_count), current_row, check_letter );
                         correct_count++;
