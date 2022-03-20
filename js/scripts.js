@@ -18,12 +18,12 @@ function getRandomWord(word_length, language="en") {
     var row_num = 0;
     
     for( letter_num = 0; letter_num < length_number; letter_num++ ) {
-        grid_items = grid_items + `<div id="id_row_0_${letter_num}" class="current_row"><span id="id_letter_0_${letter_num}" ><span></div>`
+        grid_items = grid_items + `<div id="id_row_0_${letter_num}" onclick="setColumn(0, ${letter_num});" class="current_row"><span id="id_letter_0_${letter_num}" ><span></div>`
     }
     
     for( row_num = 1; row_num <= length_number; row_num++ ) {
         for( letter_num = 0; letter_num < length_number; letter_num++ ) {
-            grid_items = grid_items + `<div id="id_row_${row_num}_${letter_num}" class="following_row"><span id="id_letter_${row_num}_${letter_num}" ><span></div>`
+            grid_items = grid_items + `<div id="id_row_${row_num}_${letter_num}" onclick="setColumn(${row_num}, ${letter_num});" class="following_row"><span id="id_letter_${row_num}_${letter_num}" ><span></div>`
         }
     }
     document.getElementById("id_guess_grid").style = `grid-template-columns: repeat(${word_length}, 1.5em); grid-template-rows: repeat(${length_number + 1}, 1.5em);`
@@ -36,6 +36,8 @@ function getRandomWord(word_length, language="en") {
         document.getElementById("id_definition").innerHTML = `<a target="_blank" class="definition" href="https://www.larousse.fr/dictionnaires/francais/${random_word.toLowerCase()}" style="margin: 0 auto;">voir la définition</a>`
 
     buildKeyboard(language);
+
+    document.getElementById(`id_row_0_0`).classList.add("current_column");
 
     current_row = 0;
     current_letter = 0;
@@ -81,7 +83,31 @@ function buildKeyboard(language) {
 function enterLetter(letter) {
     if( current_letter < length_number && current_row <= length_number ) {
         document.getElementById(`id_letter_${current_row}_${current_letter}`).innerText = letter;
+        document.getElementById(`id_row_${current_row}_${current_letter}`).classList.remove("current_column");
         current_letter++;
+        if( current_letter < length_number )
+            document.getElementById(`id_row_${current_row}_${current_letter}`).classList.add("current_column");
+    }
+}
+
+function backLetter() {
+    if( current_letter > 0 && current_row < length_number + 1 ) {
+        if( current_letter == length_number || document.getElementById(`id_letter_${current_row}_${current_letter}`).innerText == "") {
+            if( current_letter < length_number )
+                document.getElementById(`id_row_${current_row}_${current_letter}`).classList.remove("current_column");
+            current_letter--;
+            document.getElementById(`id_letter_${current_row}_${current_letter}`).innerText = "";
+            document.getElementById(`id_row_${current_row}_${current_letter}`).classList.add("current_column");
+        }
+    }
+}
+
+function setColumn(row_number, column_number) {
+    if( current_row == row_number && (column_number == 0 || document.getElementById(`id_letter_${current_row}_${column_number - 1}`).innerText != "")) {
+        if( current_letter < length_number )
+            document.getElementById(`id_row_${current_row}_${current_letter}`).classList.remove("current_column");
+        current_letter = column_number;
+        document.getElementById(`id_row_${current_row}_${current_letter}`).classList.add("current_column");
     }
 }
 
@@ -261,6 +287,7 @@ function submit() {
                     for( change_class = 0; change_class < length_number; change_class++) {
                         document.getElementById(`id_row_${current_row}_${change_class}`).className = "current_row";
                     }
+                    document.getElementById(`id_row_${current_row}_0`).classList.add("current_column");
                 } else {
                     check_array = random_word.split("");
                     for( change_class = 0; change_class < length_number; change_class++) {
@@ -337,19 +364,22 @@ function displayStats( stats ) {
     
     document.getElementById("id_stats").style.transform = "translate(-50%, 10px )";
     document.getElementById("id_settings").style.transform = "translate( -50%, -150%)";
-    document.getElementById("id_game_grid").style.transform = "translate( 0%, -150% )";
+    document.getElementById("id_overlay").hidden = false;
+    //document.getElementById("id_game_grid").style.transform = "translate( 0%, -150% )";
 }
 
 function displayGame() {
     document.getElementById("id_stats").style.transform = "translate( -50%, -150%)";
     document.getElementById("id_settings").style.transform = "translate( -50%, -150%)";
-    document.getElementById("id_game_grid").style.transform = "translate( 0% , 0% )";
+    document.getElementById("id_overlay").hidden = true;
+    //document.getElementById("id_game_grid").style.transform = "translate( 0% , 0% )";
 }
 
 function displaySettings() {
     document.getElementById("id_stats").style.transform = "translate( -50%, -150%)";
     document.getElementById("id_settings").style.transform = "translate( -50%, 10px)";
-    document.getElementById("id_game_grid").style.transform = "translate( 0% , -150% )";
+    document.getElementById("id_overlay").hidden = false;
+    //document.getElementById("id_game_grid").style.transform = "translate( 0% , -150% )";
 }
 
 function initializeSettings( ) {
@@ -396,13 +426,6 @@ function changeLanguage() {
     getRandomWord( document.getElementById('id_word_length').value, document.querySelector('input[name=\'word_language\']:checked').value);
 }
 
-function backLetter() {
-    if( current_letter > 0 && current_row < length_number + 1 ) {
-        current_letter--;
-        document.getElementById(`id_letter_${current_row}_${current_letter}`).innerText = "";
-    }
-}
-
 document.addEventListener('keyup', (event) => {
     const keyName = event.key;
   
@@ -410,9 +433,9 @@ document.addEventListener('keyup', (event) => {
         backLetter();
     } else if (keyName === 'Enter') {
         submit();
-    } else if (keyName >= 'a' && keyName <='z' ) {
+    } else if ( keyName.length == 1 && keyName >= 'a' && keyName <='z' ) {
         enterLetter(keyName.toUpperCase());
-    } else if (keyName >= 'a' && keyName <='z' ) {
+    } else if ( keyName.length == 1 && keyName >= 'A' && keyName <='Z' ) {
         enterLetter(keyName);
     }
 }, false);

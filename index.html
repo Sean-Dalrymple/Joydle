@@ -38,36 +38,58 @@
               padding: 0.4rem 1rem;
               background-color: lightgray;
             }
+            .hide-scrollbar {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .hide-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
         </style>
     </head>
-    <body>
-        <div style="display: grid; grid-template-rows: auto 1fr auto auto; padding: 0; margin: 0; z-index: 0;
-        transition: transform ease-in-out 1s;"
-        id="id_game_grid">
-            <div style="font-size: 1.5rem; margin: 5px auto; width: 100%; grid-row: 1; display:flex">
-                <div style="margin-right: auto;"><button type="button" onclick="displaySettings()" style="padding: 0; font-size: 1.2rem; background-color: transparent; border: none;">⚙️</button></div>
-                <label for="id_word_length">Word length:</label>
-                <select id="id_word_length" onchange="getRandomWord(this.value, document.querySelector('input[name=\'word_language\']:checked').value)" style="margin-left: 5px; width: 2em; font: inherit; text-align: center;">
-                    <option value="4">4</option>
-                    <option value="5" selected="selected">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                </select>
-                <input type="text" id="id_area" style="display: none;">
-                <div style="margin-left: 10px; margin-right: auto;"><button role="button" onclick="getRandomWord(document.getElementById('id_word_length').value, document.querySelector('input[name=\'word_language\']:checked').value)" style="padding: 0; font-size: 1.2rem; background-color: transparent; border: none;">♻️</button></div>
-            </div>
-            <div style="height: 100%; width:100%; grid-row: 2;">
-                <div class="guess_grid" id="id_guess_grid">
+    <script>
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+        window.addEventListener('resize', () => {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        });
+    </script>
+    <body style="display: flex; padding: 0; margin: 0; overflow: hidden; height: 100vh; height: calc(var(--vh, 1vh) * 100);">
+        <div style="width: 100%; height: 100%;">
+            <div style="display: grid; grid-template-rows: auto 1fr auto; padding: 0; margin: 0; z-index: 0; height: 100%;
+            transition: transform ease-in-out 1s;"
+            id="id_game_grid">
+                <div style="font-size: 1.5rem; margin: 5px auto; width: 100%; grid-row: 1; grid-column: 1; display:flex">
+                    <div style="margin-right: auto; margin-left: 5px;"><button type="button" onclick="displaySettings()" style="padding: 0; font-size: 1.2rem; background-color: transparent; border: none;">⚙️</button></div>
+                    <label for="id_word_length">Word length:</label>
+                    <select id="id_word_length" onchange="getRandomWord(this.value, document.querySelector('input[name=\'word_language\']:checked').value)" style="margin-left: 5px; width: 2em; font: inherit; text-align: center;">
+                        <option value="4">4</option>
+                        <option value="5" selected="selected">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                    </select>
+                    <input type="text" id="id_area" style="display: none;">
+                    <div style="margin-left: 10px; margin-right: auto;"><button role="button" onclick="getRandomWord(document.getElementById('id_word_length').value, document.querySelector('input[name=\'word_language\']:checked').value)" style="padding: 0; font-size: 1.2rem; background-color: transparent; border: none;">♻️</button></div>
+                </div>
+                <div class="hide-scrollbar" style="height: 100%; width:100%; grid-row: 2; grid-column: 1; overflow-y: scroll;">
+                    <div class="guess_grid" id="id_guess_grid">
+
+                    </div>
+                    <div id="id_definition" style="visibility: hidden; height: 0;"></div>
+                </div>
+                <div class="keyboard" style="grid-row: 3; grid-column: 1;" id="id_keyboard">
 
                 </div>
-            </div>
-            <div class="keyboard" style="grid-row: 3;" id="id_keyboard">
 
+                <div id="id_overlay" style="background: grey; opacity: 0.5; height: 100%; width: 100%; grid-column: 1; grid-row: 1 / 4; z-index: 1;" hidden>
+
+                </div>
+                
             </div>
-            <div id="id_definition" style="visibility: hidden; height: 0;"></div>
-            
         </div>
         
         <div id="id_stats" class="popup-window"
