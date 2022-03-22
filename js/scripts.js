@@ -183,10 +183,11 @@ function binaryFind(arr, searchValue) {
 }
 
 function submit() {
-    if( current_letter == length_number && current_row < length_number + 1 ) {
+    if( current_row < length_number + 1 && document.getElementById(`id_letter_${current_row}_${length_number - 1}`).innerText != "" ) {
         var fullWord = "";
         for( check_letter = 0; check_letter < length_number; check_letter++ ) {
             fullWord = fullWord + document.getElementById(`id_letter_${current_row}_${check_letter}`).innerText;
+            document.getElementById(`id_row_${current_row}_${check_letter}`).classList.remove("current_column");
         }
         var word_array;
         if( document.querySelector('input[name="word_language"]:checked').value == "en")
